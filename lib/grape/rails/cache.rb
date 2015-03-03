@@ -7,8 +7,6 @@ module Grape
       extend ActiveSupport::Concern
 
       included do
-        formatter :json, Grape::Rails::Cache::JsonFormatter
-
         helpers do
           def compare_etag(etag)
             etag = Digest::SHA1.hexdigest(etag.to_s)
@@ -56,7 +54,7 @@ module Grape
             # Try to fetch from server side cache
             cache_store_expire_time = opts[:cache_store_expires_in] || opts[:expires_in] || default_expire_time
             ::Rails.cache.fetch(cache_key, raw: true, expires_in: cache_store_expire_time) do
-              block.call.to_json
+              block.call
             end
           end
         end
